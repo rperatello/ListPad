@@ -1,7 +1,6 @@
 package br.edu.ifsp.scl.sdm.pa1.listpad;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
