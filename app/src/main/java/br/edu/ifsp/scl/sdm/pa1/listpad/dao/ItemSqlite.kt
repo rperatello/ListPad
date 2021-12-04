@@ -75,7 +75,7 @@ class ItemSqlite(context: Context): ItemDAO {
         return itens
     }
 
-    override fun removerLista(descricao: String): Int {
+    override fun removerItem(descricao: String): Int {
         return listPadBD.delete(TABLE_ITENS, "${COLUMN_DESCRICAO} = ?", arrayOf(descricao))
     }
 

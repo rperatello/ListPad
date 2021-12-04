@@ -7,5 +7,5 @@ interface ItemDAO {
     fun atualizarItem(item: Item)
     fun recuperarItem(nome: String): Item
     fun recuperarItens(): MutableList<Item>
-    fun removerLista(nome: String): Int
+    fun removerItem(descricao: String): Int
 }

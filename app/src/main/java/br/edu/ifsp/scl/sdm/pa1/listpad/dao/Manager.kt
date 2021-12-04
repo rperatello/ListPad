@@ -17,7 +17,8 @@ class Manager(context: Context){
                 "descricao TEXT NOT NULL, " +
                 "categoria TEXT NOT NULL, " +
                 "urgente INTEGER NOT NULL, " +
-                "FOREIGN KEY(categoria) REFERENCES CATEGORIAS(nome));"
+                "FOREIGN KEY(categoria) REFERENCES CATEGORIAS(nome)" +
+                "ON UPDATE CASCADE ON DELETE CASCADE);"
 
         //<><><><><><><><><> CRIANDO TABELA ITENS <><><><><><><><><><><><><><>
         private val CRIAR_TABELA_ITENS = "CREATE TABLE IF NOT EXISTS ITENS (" +

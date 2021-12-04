@@ -52,8 +52,8 @@ class CategoriaSqlite (context: Context): CategoriaDAO {
 
         if(categoriasCursor.moveToFirst()){
             while (!categoriasCursor.isAfterLast){
-                val categoria = Categoria(
-                        categoriasCursor.getString(categoriasCursor.getColumnIndexOrThrow(COLUMN_NOME))
+                val categoria = Categoria (
+                    categoriasCursor.getString(categoriasCursor.getColumnIndexOrThrow(COLUMN_NOME))
                 )
                 categorias.add(categoria)
                 categoriasCursor.moveToNext()
