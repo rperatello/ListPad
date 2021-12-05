@@ -6,29 +6,31 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.ifsp.scl.sdm.pa1.listpad.databinding.ActivityItemFormBinding
 import br.edu.ifsp.scl.sdm.pa1.listpad.model.Item
+import br.edu.ifsp.scl.sdm.pa1.listpad.model.Lista
+import br.edu.ifsp.scl.sdm.pa1.listpad.view.ItemActivity.Extras.EXTRA_ITEM
 
 class ItemFormActivity : AppCompatActivity() {
 
     // Classe de ViewBinding
     private lateinit var activityItemFormBinding: ActivityItemFormBinding
+    private val POSICAO_INVALIDA = -1
+    private var posicao = POSICAO_INVALIDA
+    private lateinit var item: Item
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityItemFormBinding = ActivityItemFormBinding.inflate(layoutInflater)
         setContentView(activityItemFormBinding.root)
 
-        // Novo contato ou editar contato
-        val item: Item? = intent.getParcelableExtra(CategoriaActivity.Extras.EXTRA_ITEM)
-        if (item != null) {
-            // Editar contato
-            activityItemFormBinding.listaItemTv.setText(item.lista)
-            activityItemFormBinding.listaItemTv.isEnabled = false
+        posicao = intent.getIntExtra(ListaActivity.EXTRA_POSICAO_LISTA, POSICAO_INVALIDA)
+
+        intent.getParcelableExtra<Lista>(EXTRA_ITEM)?.apply {
+            activityItemFormBinding.listaItemTv.text = item.lista
             activityItemFormBinding.descricaoItemEt.setText(item.descricao)
             activityItemFormBinding.realizadoItemCb.isChecked = item.realizado
 
-            if (intent.action == ItemActivity.Extras.VISUALIZAR_ITEM_ACTION) {
-                // Visualizar contato
-                activityItemFormBinding.listaItemTv.isEnabled = false
+            if (posicao != -1) {
+                //activityItemFormBinding.listaItemTv.isEnabled = false
                 activityItemFormBinding.descricaoItemEt.isEnabled = false
                 activityItemFormBinding.realizadoItemCb.isEnabled = false
                 activityItemFormBinding.salvarBtItem.visibility = View.GONE
@@ -36,14 +38,14 @@ class ItemFormActivity : AppCompatActivity() {
         }
 
         activityItemFormBinding.salvarBtItem.setOnClickListener {
-            val novoItem = Item(
+            val item = Item(
                 activityItemFormBinding.listaItemTv.text.toString(),
                 activityItemFormBinding.descricaoItemEt.text.toString(),
                 activityItemFormBinding.realizadoItemCb.isChecked
                 )
 
             val retornoIntent = Intent()
-            retornoIntent.putExtra(ItemActivity.Extras.EXTRA_ITEM, novoItem)
+            retornoIntent.putExtra(EXTRA_ITEM, item)
             setResult(RESULT_OK, retornoIntent)
             finish()
         }

@@ -59,7 +59,8 @@ class ItemSqlite(context: Context): ItemDAO {
 
     override fun recuperarItens(): MutableList<Item> {
         val itens: MutableList<Item> = ArrayList()
-        val itensCursor = listPadBD.rawQuery("select * from ${TABLE_ITENS} order by ${COLUMN_DESCRICAO}", null)
+        var sql = "select * from ${TABLE_ITENS} order by ${COLUMN_DESCRICAO}"
+        val itensCursor = listPadBD.rawQuery(sql, null)
 
         if(itensCursor.moveToFirst()){
             while (!itensCursor.isAfterLast){

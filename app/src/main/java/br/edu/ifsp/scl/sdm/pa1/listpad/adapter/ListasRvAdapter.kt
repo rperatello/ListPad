@@ -14,7 +14,7 @@ class ListasRvAdapter (
     private val listaList: MutableList<Lista>
 ): RecyclerView.Adapter<ListasRvAdapter.ListaLayoutHolder>() {
 
-    // Posição será setada pelo onBindViewHolder para chamar as funções de tratamento de clique para a categoria correta
+    // Posição será setada pelo onBindViewHolder para chamar as funções de tratamento de clique
     private val POSICAO_INVALIDA = -1
     var posicao: Int = POSICAO_INVALIDA
 

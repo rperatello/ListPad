@@ -10,17 +10,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.scl.sdm.pa1.listpad.R
 import br.edu.ifsp.scl.sdm.pa1.listpad.adapter.ListasRvAdapter
+import br.edu.ifsp.scl.sdm.pa1.listpad.controller.CategoriaController
 import br.edu.ifsp.scl.sdm.pa1.listpad.controller.ListaController
 import br.edu.ifsp.scl.sdm.pa1.listpad.databinding.ActivityListaBinding
+import br.edu.ifsp.scl.sdm.pa1.listpad.model.Categoria
 import br.edu.ifsp.scl.sdm.pa1.listpad.model.Lista
 import com.google.android.material.snackbar.Snackbar
 
 class ListaActivity : AppCompatActivity(), OnListaClickListener {
 
     private val POSICAO_INVALIDA = -1
+    private var categorias: MutableList<String> = arrayListOf()
 
     companion object Extras {
         const val EXTRA_LISTA = "EXTRA_LISTA"
+        const val EXTRA_CATEGORIAS = "EXTRA_CATEGORIAS"
         const val EXTRA_POSICAO_LISTA = "EXTRA_POSICAO_LISTA"
     }
 
@@ -28,15 +32,24 @@ class ListaActivity : AppCompatActivity(), OnListaClickListener {
         ActivityListaBinding.inflate(layoutInflater)
     }
 
-    private lateinit var adicionarlistaActivityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var adicionarListaActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var visualizarListaActivityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var editarCategoriaActivityResultLauncher: ActivityResultLauncher<Intent>
-
+    private lateinit var editarListaActivityResultLauncher: ActivityResultLauncher<Intent>
 
     //Controller
     private val listaController: ListaController by lazy {
         ListaController(this)
     }
+
+    //Controller
+    private val categoriaController: CategoriaController by lazy {
+        CategoriaController(this)
+    }
+
+    private val categoriasObjLista: MutableList<Categoria> by lazy{
+        categoriaController.recuperarCategorias()
+    }
+
 
     //Data source
     private val listaList: MutableList<Lista> by lazy {
@@ -62,8 +75,12 @@ class ListaActivity : AppCompatActivity(), OnListaClickListener {
         activityListaBinding.listasRv.adapter = listaAdapter
         activityListaBinding.listasRv.layoutManager = listaLayoutManager
 
+        for (c in  categoriasObjLista){
+            categorias.add(c.nome)
+        }
+
         //Adicionar
-        adicionarlistaActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
+        adicionarListaActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
             if (resultado.resultCode == RESULT_OK) {
                 resultado.data?.getParcelableExtra<Lista>(EXTRA_LISTA)?.apply {
                     listaController.criarLista(this)
@@ -81,8 +98,8 @@ class ListaActivity : AppCompatActivity(), OnListaClickListener {
             }
         }
 
-        //Editar um episódio
-        editarCategoriaActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
+        //Editar
+        editarListaActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
             if (resultado.resultCode == RESULT_OK) {
                 val posicao = resultado.data?.getIntExtra(EXTRA_POSICAO_LISTA, POSICAO_INVALIDA)
                 resultado.data?.getParcelableExtra<Lista>(EXTRA_LISTA)?.apply {
@@ -97,8 +114,8 @@ class ListaActivity : AppCompatActivity(), OnListaClickListener {
 
         activityListaBinding.adicionarListaFb.setOnClickListener {
             val addListaIntent = Intent(this, ListaFormActivity::class.java)
-            //addListaIntent.putExtra()
-            adicionarlistaActivityResultLauncher.launch(addListaIntent)
+            addListaIntent.putExtra(EXTRA_CATEGORIAS, categorias)
+            adicionarListaActivityResultLauncher.launch(addListaIntent)
         }
     }
 
@@ -111,8 +128,9 @@ class ListaActivity : AppCompatActivity(), OnListaClickListener {
                 //Editar
                 val editarListaIntent = Intent(this, ListaFormActivity::class.java)
                 editarListaIntent.putExtra(EXTRA_LISTA, lista)
+                //editarListaIntent.putExtra(EXTRA_CATEGORIAS, categorias)
                 editarListaIntent.putExtra(EXTRA_POSICAO_LISTA, posicao)
-                editarCategoriaActivityResultLauncher.launch(editarListaIntent)
+                editarListaActivityResultLauncher.launch(editarListaIntent)
                 true
             } R.id.removerListaMi -> {
                 //Remover

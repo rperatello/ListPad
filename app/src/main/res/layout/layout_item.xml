@@ -8,30 +8,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
+        android:id="@+id/listaItemLayoutTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lista do Item"
+        android:textSize="20dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/descItemLayoutTv"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
         android:id="@+id/descItemLayoutTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Descrição do item"
         android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@id/urgenciaItemLayoutLL"
+        app:layout_constraintEnd_toStartOf="@id/concluidoItemLayoutLL"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/listaItemLayoutTv" />
 
     <LinearLayout
-        android:id="@+id/urgenciaItemLayoutLL"
+        android:id="@+id/concluidoItemLayoutLL"
         android:layout_width="0dp"
         android:layout_height="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descItemLayoutTv" >
 
         <TextView
-            android:id="@+id/urgenciaItemLayoutTv"
+            android:id="@+id/concluidoItemLayoutTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/concluido" />
 
         <CheckBox
-            android:id="@+id/urgenciaItemLayoutCb"
+            android:id="@+id/concluidoItemLayoutCb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

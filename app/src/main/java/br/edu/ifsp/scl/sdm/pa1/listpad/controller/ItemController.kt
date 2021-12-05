@@ -4,9 +4,10 @@ import br.edu.ifsp.scl.sdm.pa1.listpad.dao.ItemDAO
 import br.edu.ifsp.scl.sdm.pa1.listpad.dao.ItemSqlite
 import br.edu.ifsp.scl.sdm.pa1.listpad.model.Item
 import br.edu.ifsp.scl.sdm.pa1.listpad.view.ItemActivity
+import br.edu.ifsp.scl.sdm.pa1.listpad.view.ListaFormActivity
 
-class ItemController (itemActivity: ItemActivity) {
-    private val itemDAO: ItemDAO = ItemSqlite(itemActivity)
+class ItemController (ItemActivity: ItemActivity?) {
+    private val itemDAO: ItemDAO = ItemSqlite(ItemActivity!!)
 
     fun criarItem(item: Item) = itemDAO.criarItem(item)
     fun atualizarItem(item: Item) = itemDAO.atualizarItem(item)
