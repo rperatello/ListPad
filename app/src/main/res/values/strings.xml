@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ListPad</string>
     <string name="nomeLista">Nome da Lista</string>
-    <string name="urgente">Urgente?</string>
+    <string name="urgente">Urgente</string>
     <string name="salvar">Salvar</string>
     <string name="listas_cadastradas">LISTAS CADASTRADAS</string>
     <string name="adicionar_lista">Adicionar lista</string>
@@ -10,9 +10,11 @@
     <string name="categorias_cadastradas">CATEGORIAS CADASTRADAS</string>
     <string name="nome_da_lista">Nome da lista</string>
     <string name="descricao_da_lista">Descrição da lista</string>
-    <string name="concluido">Concluído?</string>
+    <string name="concluido">Concluído</string>
     <string name="remover_lista">Remover lista</string>
     <string name="editar_categoria">Editar categoria</string>
     <string name="remover_categoria">Remover categoria</string>
     <string name="categoria">Categoria</string>
+    <string name="descricao_do_item">Descrição do item</string>
+    <string name="lista_do_item">Lista do Item</string>
 </resources>

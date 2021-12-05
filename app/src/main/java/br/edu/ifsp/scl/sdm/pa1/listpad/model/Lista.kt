@@ -4,9 +4,10 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Lista (
-    val nome: String = "",
-    val descricao: String = "",
-    val categoria: String = "",
-    val urgente: Boolean = false
-): Parcelable
+data class Lista(
+        val id: Int?,
+        val nome: String = "",
+        val descricao: String = "",
+        val categoria: String = "",
+        val urgente: Boolean = false
+) : Parcelable

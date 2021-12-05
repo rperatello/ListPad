@@ -1,50 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="?android:attr/selectableItemBackground"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   android:clickable="true"
+                                                   android:focusable="true"
+                                                   android:background="?android:attr/selectableItemBackground"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/listaItemLayoutTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Lista do Item"
-        android:textSize="20dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/descItemLayoutTv"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <TextView
-        android:id="@+id/descItemLayoutTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Descrição do item"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@id/concluidoItemLayoutLL"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/listaItemLayoutTv" />
+            android:id="@+id/descItemLayoutTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/descricao_do_item"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/concluidoItemLayoutLL"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <LinearLayout
-        android:id="@+id/concluidoItemLayoutLL"
-        android:layout_width="0dp"
-        android:layout_height="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descItemLayoutTv" >
+            android:id="@+id/concluidoItemLayoutLL"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descItemLayoutTv">
 
         <TextView
-            android:id="@+id/concluidoItemLayoutTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/concluido" />
+                android:id="@+id/concluidoItemLayoutTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/concluido"/>
 
         <CheckBox
-            android:id="@+id/concluidoItemLayoutCb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+                android:clickable="false"
+                android:id="@+id/concluidoItemLayoutCb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,108 +1,73 @@
 package br.edu.ifsp.scl.sdm.pa1.listpad.view
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.edu.ifsp.scl.sdm.pa1.listpad.R
 import br.edu.ifsp.scl.sdm.pa1.listpad.adapter.ItensRvAdapter
-import br.edu.ifsp.scl.sdm.pa1.listpad.adapter.ListasRvAdapter
-import br.edu.ifsp.scl.sdm.pa1.listpad.controller.ItemController
-import br.edu.ifsp.scl.sdm.pa1.listpad.controller.ListaController
+import br.edu.ifsp.scl.sdm.pa1.listpad.dao.ItemDAO
+import br.edu.ifsp.scl.sdm.pa1.listpad.dao.ItemDAOImpl
 import br.edu.ifsp.scl.sdm.pa1.listpad.databinding.ActivityItemBinding
-import br.edu.ifsp.scl.sdm.pa1.listpad.databinding.ActivityListaBinding
 import br.edu.ifsp.scl.sdm.pa1.listpad.model.Item
 import br.edu.ifsp.scl.sdm.pa1.listpad.model.Lista
 import com.google.android.material.snackbar.Snackbar
 
-class ItemActivity : AppCompatActivity(), OnItemClickListener {
+class ItemActivity : AppCompatActivity() {
 
-    private val POSICAO_INVALIDA = -1
+    private var listId = -1
 
     companion object Extras {
         const val EXTRA_ITEM = "EXTRA_ITEM"
-        const val EXTRA_POSICAO_ITEM = "EXTRA_POSICAO_ITEM"
+        const val EXTRA_LIST_ID = "EXTRA_LIST_ID"
     }
 
     private val activityItemBinding: ActivityItemBinding by lazy {
         ActivityItemBinding.inflate(layoutInflater)
     }
 
-    private lateinit var adicionarItemActivityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var visualizarItemActivityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var editarItemActivityResultLauncher: ActivityResultLauncher<Intent>
+    private val activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
+                if (resultado.resultCode == RESULT_OK) {
+                    refreshItemList()
+                }
+            }
 
-
-    //Controller
-    private val itemController: ItemController by lazy {
-        ItemController(this)
+    private val itemDao: ItemDAO by lazy {
+        ItemDAOImpl(this)
     }
 
     //Data source
-    private val itemList: MutableList<Item> by lazy {
-        itemController.recuperarItens()
-    }
+    private lateinit var itemList: MutableList<Item>
 
     //Adapter
-    private val itemAdapter: ItensRvAdapter by lazy {
-        ItensRvAdapter(this, itemList)
-    }
+    private lateinit var itemAdapter: ItensRvAdapter
 
     //Layout Manager
-    private val itemLayoutManager: LinearLayoutManager by lazy {
-        LinearLayoutManager(this)
-    }
+    private val itemLayoutManager: LinearLayoutManager = LinearLayoutManager(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(activityItemBinding.root)
         supportActionBar?.subtitle = "Itens da Lista"
 
-        //Associar Adapter e Layout Manager ao Recycler View
-        activityItemBinding.itensRv.adapter = itemAdapter
+
+        intent.getParcelableExtra<Lista>(ListaActivity.EXTRA_LISTA)?.apply {
+            listId = this.id ?: -1
+        }
+
         activityItemBinding.itensRv.layoutManager = itemLayoutManager
-
-        //Adicionar
-        adicionarItemActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
-            if (resultado.resultCode == RESULT_OK) {
-                resultado.data?.getParcelableExtra<Item>(EXTRA_ITEM)?.apply {
-                    itemController.criarItem(this)
-                    itemList.add(this)
-                    itemAdapter.notifyDataSetChanged()
-                }
-            }
-        }
-
-        visualizarItemActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
-            if (resultado.resultCode == RESULT_OK) {
-                resultado.data?.getIntExtra(EXTRA_POSICAO_ITEM, POSICAO_INVALIDA)
-                resultado.data?.getParcelableExtra<Item>(EXTRA_ITEM)?.apply {
-                }
-            }
-        }
-
-        //Editar
-        editarItemActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
-            if (resultado.resultCode == RESULT_OK) {
-                val posicao = resultado.data?.getIntExtra(EXTRA_POSICAO_ITEM, POSICAO_INVALIDA)
-                resultado.data?.getParcelableExtra<Item>(EXTRA_ITEM)?.apply {
-                    if (posicao != null && posicao != -1) {
-                        itemController.atualizarItem(this)
-                        itemList[posicao] = this
-                        itemAdapter.notifyDataSetChanged()
-                    }
-                }
-            }
-        }
+        refreshItemList()
 
         activityItemBinding.adicionarItemFb.setOnClickListener {
-            val addItemIntent = Intent(this, ItemFormActivity::class.java)
-            //addListaIntent.putExtra()
-            adicionarItemActivityResultLauncher.launch(addItemIntent)
+            val addItemIntent = Intent(this, ItemFormActivity::class.java).apply {
+                putExtra(EXTRA_LIST_ID, listId)
+            }
+            activityResultLauncher.launch(addItemIntent)
         }
     }
 
@@ -110,23 +75,27 @@ class ItemActivity : AppCompatActivity(), OnItemClickListener {
         val posicao = itemAdapter.posicao
         val item = itemList[posicao]
 
-        return when(itemMenu.itemId) {
-            R.id.EditarItemMi -> {
+        return when (itemMenu.itemId) {
+            R.id.editarItemMi -> {
                 //Editar
-                val editarListaIntent = Intent(this, ListaFormActivity::class.java)
-                editarListaIntent.putExtra(EXTRA_ITEM, item)
-                editarListaIntent.putExtra(EXTRA_POSICAO_ITEM, posicao)
-                editarItemActivityResultLauncher.launch(editarListaIntent)
+                val editarItemIntent = Intent(this, ItemFormActivity::class.java).apply {
+                    putExtra(EXTRA_ITEM, item)
+                    putExtra(EXTRA_LIST_ID, item.listaId)
+                }
+
+                activityResultLauncher.launch(editarItemIntent)
                 true
-            } R.id.removerItemMi -> {
+            }
+            R.id.removerItemMi -> {
                 //Remover
                 with(AlertDialog.Builder(this)) {
                     setMessage("Confirma a remoção?")
                     setPositiveButton("Sim") { _, _ ->
-                        itemController.removerLista(item.descricao)
-                        itemList.removeAt(posicao)
-                        itemAdapter.notifyDataSetChanged()
-                        Snackbar.make(activityItemBinding.root, "Item removido", Snackbar.LENGTH_SHORT).show()
+                        item.id?.let {
+                            itemDao.removerItem(it)
+                            refreshItemList()
+                            Snackbar.make(activityItemBinding.root, "Item removido", Snackbar.LENGTH_SHORT).show()
+                        }
                     }
                     setNegativeButton("Não") { _, _ ->
                         Snackbar.make(activityItemBinding.root, "Remoção cancelada", Snackbar.LENGTH_SHORT).show()
@@ -135,19 +104,18 @@ class ItemActivity : AppCompatActivity(), OnItemClickListener {
                 }.show()
 
                 true
-            } else -> { false }
+            }
+            else -> {
+                false
+            }
         }
     }
 
-    override fun onItemClick(posicao: Int) {
-        val item = itemList[posicao]
-        val consultarItensIntent = Intent(this, ItemActivity::class.java)
-        consultarItensIntent.putExtra(EXTRA_ITEM, item)
-        startActivity(consultarItensIntent)
-    }
-
-    override fun onStart() {
-        super.onStart()
+    @SuppressLint("NotifyDataSetChanged")
+    fun refreshItemList() {
+        itemList = itemDao.recuperarItens(this.listId)
+        itemAdapter = ItensRvAdapter(itemList)
+        activityItemBinding.itensRv.adapter = itemAdapter
     }
 
 }

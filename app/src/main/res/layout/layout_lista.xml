@@ -1,60 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="?android:attr/selectableItemBackground"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <TextView
-        android:id="@+id/nomeListaLayoutTv"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/nome_da_lista"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/descListaLayoutTv"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/descListaLayoutTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/descricao_da_lista"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@id/categoriaListaLayoutTv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nomeListaLayoutTv" />
+            android:id="@+id/nomeListaLayoutTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nome_da_lista"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/descListaLayoutTv"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/categoriaListaLayoutTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/categoria"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@id/urgenteListaLayoutLL"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/descListaLayoutTv" />
+            android:id="@+id/descListaLayoutTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/descricao_da_lista"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/categoriaListaLayoutTv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nomeListaLayoutTv"/>
 
-     <LinearLayout
-        android:id="@+id/urgenteListaLayoutLL"
-        android:layout_width="0dp"
-        android:layout_height="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categoriaListaLayoutTv" >
+    <TextView
+            android:id="@+id/categoriaListaLayoutTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/categoria"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/urgenteListaLayoutLL"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/descListaLayoutTv"/>
+
+    <LinearLayout
+            android:id="@+id/urgenteListaLayoutLL"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/categoriaListaLayoutTv">
 
         <TextView
-            android:id="@+id/urgenciaItemLayoutTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/urgente" />
+                android:id="@+id/urgenciaItemLayoutTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/urgente"/>
 
         <CheckBox
-            android:id="@+id/urgenteListaLayoutCb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+                android:clickable="false"
+                android:id="@+id/urgenteListaLayoutCb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 

@@ -1,52 +1,72 @@
 package br.edu.ifsp.scl.sdm.pa1.listpad.view
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import br.edu.ifsp.scl.sdm.pa1.listpad.dao.ItemDAO
+import br.edu.ifsp.scl.sdm.pa1.listpad.dao.ItemDAOImpl
 import br.edu.ifsp.scl.sdm.pa1.listpad.databinding.ActivityItemFormBinding
 import br.edu.ifsp.scl.sdm.pa1.listpad.model.Item
-import br.edu.ifsp.scl.sdm.pa1.listpad.model.Lista
 import br.edu.ifsp.scl.sdm.pa1.listpad.view.ItemActivity.Extras.EXTRA_ITEM
+import br.edu.ifsp.scl.sdm.pa1.listpad.view.ItemActivity.Extras.EXTRA_LIST_ID
+import com.google.android.material.snackbar.Snackbar
 
 class ItemFormActivity : AppCompatActivity() {
 
     // Classe de ViewBinding
     private lateinit var activityItemFormBinding: ActivityItemFormBinding
-    private val POSICAO_INVALIDA = -1
-    private var posicao = POSICAO_INVALIDA
-    private lateinit var item: Item
+
+    private var listaId = -1
+    private var itemId = -1
+
+    private val itemDao: ItemDAO by lazy {
+        ItemDAOImpl(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityItemFormBinding = ActivityItemFormBinding.inflate(layoutInflater)
         setContentView(activityItemFormBinding.root)
 
-        posicao = intent.getIntExtra(ListaActivity.EXTRA_POSICAO_LISTA, POSICAO_INVALIDA)
-
-        intent.getParcelableExtra<Lista>(EXTRA_ITEM)?.apply {
-            activityItemFormBinding.listaItemTv.text = item.lista
-            activityItemFormBinding.descricaoItemEt.setText(item.descricao)
-            activityItemFormBinding.realizadoItemCb.isChecked = item.realizado
-
-            if (posicao != -1) {
-                //activityItemFormBinding.listaItemTv.isEnabled = false
-                activityItemFormBinding.descricaoItemEt.isEnabled = false
-                activityItemFormBinding.realizadoItemCb.isEnabled = false
-                activityItemFormBinding.salvarBtItem.visibility = View.GONE
-            }
+        listaId = intent.getIntExtra(EXTRA_LIST_ID, -1)
+        intent.getParcelableExtra<Item>(EXTRA_ITEM)?.apply {
+            itemId = this.id ?: -1
+            activityItemFormBinding.descricaoItemEt.setText(descricao)
+            activityItemFormBinding.realizadoItemCb.isChecked = realizado
         }
 
         activityItemFormBinding.salvarBtItem.setOnClickListener {
-            val item = Item(
-                activityItemFormBinding.listaItemTv.text.toString(),
-                activityItemFormBinding.descricaoItemEt.text.toString(),
-                activityItemFormBinding.realizadoItemCb.isChecked
-                )
+            val descricao = activityItemFormBinding.descricaoItemEt.text.toString()
+            if (descricao.isEmpty()) {
+                Snackbar.make(activityItemFormBinding.root,
+                        "Descrição não pode ser em branco",
+                        Snackbar.LENGTH_SHORT)
+                        .show()
+                return@setOnClickListener
+            }
 
-            val retornoIntent = Intent()
-            retornoIntent.putExtra(EXTRA_ITEM, item)
-            setResult(RESULT_OK, retornoIntent)
+            val item = Item(
+                    if (itemId != -1) itemId else null,
+                    listaId,
+                    descricao,
+                    activityItemFormBinding.realizadoItemCb.isChecked
+            )
+
+            val (success, create) = if (item.id == null) {
+                itemDao.criarItem(item) to true
+            } else {
+                itemDao.atualizarItem(item) to false
+            }
+
+            if (!success) {
+                Snackbar.make(activityItemFormBinding.root,
+                        "Erro ao ${if (create) "inserir" else "editar"} item",
+                        Snackbar.LENGTH_SHORT)
+                        .show()
+
+                return@setOnClickListener
+            }
+
+            setResult(RESULT_OK)
             finish()
         }
     }
